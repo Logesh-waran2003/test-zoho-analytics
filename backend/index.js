@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { initDB } from './db/index.js';
-import zohoRoutes from './routes/zoho.js';
+import authRoutes from './routes/auth.js';
+import formRoutes from './routes/form.js';
+import dashboardRoutes from './routes/dashboard.js';
 
 dotenv.config();
 
@@ -22,7 +24,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use('/zoho', zohoRoutes);
+app.use('/auth', authRoutes);
+app.use('/form', formRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 const startServer = async () => {
   try {

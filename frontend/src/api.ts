@@ -9,7 +9,22 @@ export const api = axios.create({
   },
 });
 
-export const getEmbedUrl = async (userId: string, orgId: string) => {
-  const response = await api.post('/zoho/embed-url', { userId, orgId });
+export const login = async () => {
+  const response = await api.post('/auth/login');
+  return response.data;
+};
+
+export const submitForm = async (formData: any) => {
+  const response = await api.post('/form/submit', formData);
+  return response.data;
+};
+
+export const getEmbedUrl = async (tenantId: string) => {
+  const response = await api.get('/dashboard/embed-url', { params: { tenant_id: tenantId } });
   return response.data.embedUrl;
+};
+
+export const getZohoRedirectUrl = async (tenantId: string) => {
+  const response = await api.get('/dashboard/zoho-redirect-url', { params: { tenant_id: tenantId } });
+  return response.data.redirectUrl;
 };

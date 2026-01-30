@@ -27,15 +27,14 @@ export const getAccessToken = async () => {
   return cachedToken;
 };
 
-export const getEmbedUrl = async (userId, orgId) => {
+export const getEmbedUrl = async (tenantId) => {
   const accessToken = await getAccessToken();
 
   const payload = {
     workspace_id: process.env.ZOHO_WORKSPACE_ID,
     view_id: process.env.ZOHO_VIEW_ID,
     user_info: {
-      user_id: userId,
-      org_id: orgId,
+      tenant_id: tenantId,
     },
     embed_type: 'iframe',
     expiry_time: 300000,
@@ -53,4 +52,12 @@ export const getEmbedUrl = async (userId, orgId) => {
   );
 
   return response.data.data.embed_url;
+};
+
+export const getZohoRedirectUrl = async (tenantId) => {
+  const accessToken = await getAccessToken();
+  
+  const redirectUrl = `${process.env.ZOHO_ANALYTICS_SERVER_URL}/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}?ZOHO_ACCESS_TOKEN=${accessToken}&tenant_id=${tenantId}`;
+  
+  return redirectUrl;
 };

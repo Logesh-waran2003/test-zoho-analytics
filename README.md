@@ -1,20 +1,45 @@
-# Zoho Analytics SSO Embed Application
+# Zoho Analytics Multi-Tenant SaaS Application
 
-Production-ready fullstack application for embedding Zoho Analytics dashboards using SSO.
+Production-ready fullstack application for embedding Zoho Analytics dashboards with white-label support and SSO-based report customization.
+
+## Overview
+
+- Users fill forms in React app
+- Data saved to PostgreSQL (multi-tenant)
+- Zoho Analytics syncs data
+- Dashboards embedded (read-only) in app
+- Users can click "Customize Reports" to edit/create reports in Zoho UI via SSO
+- Changes reflect automatically when users return
 
 ## Tech Stack
 
-- **Backend**: Node.js 20, Express
-- **Frontend**: React 18 + TypeScript (Vite)
-- **Database**: PostgreSQL
-- **Process Manager**: PM2
-- **Deployment**: AWS EC2 (Linux)
+**Frontend:**
+- React 18 + TypeScript
+- Vite
+- React Router
+- Axios
+
+**Backend:**
+- Node.js 20
+- Express
+- PostgreSQL (pg)
+- Zoho Analytics OAuth
+
+**Infrastructure:**
+- AWS EC2 (Linux)
+- PM2 (process manager)
+- PostgreSQL (single DB, multi-tenant)
+
+## Multi-Tenancy
+
+Every table includes `tenant_id`. All queries scope by `tenant_id`.
 
 ## Prerequisites
 
 - Node.js 20+
 - PostgreSQL
 - PM2 (for production)
+- Zoho Analytics account with OAuth app configured
 
 ## Setup
 
@@ -42,12 +67,131 @@ cp .env.example .env
 ```
 
 **Required Zoho Configuration:**
-- Create a Zoho Analytics OAuth app
+- Create Zoho Analytics OAuth app
 - Get Client ID, Client Secret, and Refresh Token
 - Add your domain to Zoho Allowed Domains
-- Get Workspace ID and View ID from your dashboard
+- Get Workspace ID and View ID
+- Enable white-label and SSO
 
 ### 3. Frontend Setup
+
+```bash
+cd frontend
+npm install
+```
+
+## Development
+
+### Start Backend
+```bash
+cd backend
+npm run dev
+```
+
+### Start Frontend
+```bash
+cd frontend
+npm run dev
+```
+
+**URLs:**
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3001
+
+## Application Flow
+
+1. **Login** (`/login`) - Mock authentication, returns user + tenant_id
+2. **Form** (`/form`) - 10-field data entry form, saves to PostgreSQL
+3. **Dashboard** (`/dashboard`) - Embedded Zoho Analytics dashboard with "Customize Reports" button
+4. **Customize Reports** - Redirects to Zoho Analytics UI for editing/creating reports
+5. **Return** - User navigates back, dashboard reloads with updated reports
+
+## API Endpoints
+
+### Authentication
+- `POST /auth/login` - Mock login (returns user_id, tenant_id, token)
+
+### Form Submission
+- `POST /form/submit` - Submit 10-field form data
+  - Body: `{ tenant_id, field_1, field_2, ..., field_10 }`
+
+### Dashboard
+- `GET /dashboard/embed-url?tenant_id=X` - Get Zoho embed URL (read-only iframe)
+- `GET /dashboard/zoho-redirect-url?tenant_id=X` - Get Zoho SSO redirect URL (edit/create reports)
+
+### Health
+- `GET /health` - Health check
+
+## Database Schema
+
+### users
+- id (PK)
+- user_id (unique)
+- tenant_id
+- created_at
+
+### form_data
+- id (PK)
+- tenant_id
+- field_1 to field_10
+- created_at
+
+## Security
+
+- No Zoho credentials in frontend
+- All Zoho API calls from backend only
+- Embed URLs are short-lived (5 minutes)
+- tenant_id enforced on all queries
+- CORS configured for frontend origin
+
+## Production Deployment
+
+### Build Frontend
+```bash
+cd frontend
+npm run build
+```
+
+### Start Backend with PM2
+```bash
+cd backend
+pm2 start ecosystem.config.cjs
+pm2 save
+pm2 startup
+```
+
+### Nginx Configuration
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    # Frontend
+    location / {
+        root /path/to/frontend/dist;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Backend API
+    location /api/ {
+        proxy_pass http://localhost:3001/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+## Environment Variables
+
+See `backend/.env.example` for all required variables.
+
+## License
+
+MIT
 
 ```bash
 cd frontend
