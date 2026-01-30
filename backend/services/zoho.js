@@ -30,28 +30,10 @@ export const getAccessToken = async () => {
 export const getEmbedUrl = async (tenantId) => {
   const accessToken = await getAccessToken();
 
-  const payload = {
-    workspace_id: process.env.ZOHO_WORKSPACE_ID,
-    view_id: process.env.ZOHO_VIEW_ID,
-    user_info: {
-      tenant_id: tenantId,
-    },
-    embed_type: 'iframe',
-    expiry_time: 300000,
-  };
-
-  const response = await axios.post(
-    `${process.env.ZOHO_ANALYTICS_SERVER_URL}/analyticsapi/v2/workspaces/${process.env.ZOHO_WORKSPACE_ID}/views/${process.env.ZOHO_VIEW_ID}/embed`,
-    payload,
-    {
-      headers: {
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    }
-  );
-
-  return response.data.data.embed_url;
+  // Generate a simple embed URL with access token
+  const embedUrl = `https://analytics.zoho.in/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}?ZOHO_ACCESS_TOKEN=${accessToken}`;
+  
+  return embedUrl;
 };
 
 export const getZohoRedirectUrl = async (tenantId) => {
