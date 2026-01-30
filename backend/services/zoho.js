@@ -41,7 +41,7 @@ export const getEmbedUrl = async (tenantId) => {
   };
 
   const response = await axios.post(
-    `${process.env.ZOHO_ANALYTICS_SERVER_URL}/restapi/v2/workspaces/${process.env.ZOHO_WORKSPACE_ID}/views/${process.env.ZOHO_VIEW_ID}/embed`,
+    `${process.env.ZOHO_ANALYTICS_SERVER_URL}/analyticsapi/v2/workspaces/${process.env.ZOHO_WORKSPACE_ID}/views/${process.env.ZOHO_VIEW_ID}/embed`,
     payload,
     {
       headers: {
