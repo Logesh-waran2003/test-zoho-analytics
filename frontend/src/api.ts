@@ -1,0 +1,15 @@
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export const getEmbedUrl = async (userId: string, orgId: string) => {
+  const response = await api.post('/zoho/embed-url', { userId, orgId });
+  return response.data.embedUrl;
+};
