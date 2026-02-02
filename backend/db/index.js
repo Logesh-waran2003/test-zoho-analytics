@@ -9,6 +9,7 @@ const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_P
 
 const pool = new Pool({ connectionString });
 
+export { pool };
 export const query = (text, params) => pool.query(text, params);
 
 export const initDB = async () => {
