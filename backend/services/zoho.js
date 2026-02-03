@@ -29,18 +29,7 @@ export const getAccessToken = async () => {
 
 export const getEmbedUrl = async (tenantId) => {
   const accessToken = await getAccessToken();
-
-  const response = await axios.get(
-    `${process.env.ZOHO_ANALYTICS_SERVER_URL}/restapi/v2/workspaces/${process.env.ZOHO_WORKSPACE_ID}/views/${process.env.ZOHO_VIEW_ID}/publish/embed`,
-    {
-      headers: {
-        'Authorization': `Zoho-oauthtoken ${accessToken}`,
-        'ZANALYTICS-ORGID': process.env.ZOHO_ORG_ID
-      }
-    }
-  );
-
-  return response.data.data.embedUrl;
+  return `https://analytics.zoho.in/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}?ZOHO_ACCESS_TOKEN=${accessToken}`;
 };
 
 export const getZohoRedirectUrl = async (tenantId) => {
