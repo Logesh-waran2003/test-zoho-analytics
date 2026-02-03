@@ -30,25 +30,12 @@ export const getAccessToken = async () => {
 export const getEmbedUrl = async (tenantId) => {
   const accessToken = await getAccessToken();
 
-  const config = {
-    criteria: `"form_data"."tenant_id"='${tenantId}'`,
-    permissions: {
-      export: false,
-      vud: false,
-      drillDown: false
-    },
-    validityPeriod: 3600
-  };
-
   const response = await axios.get(
     `${process.env.ZOHO_ANALYTICS_SERVER_URL}/restapi/v2/workspaces/${process.env.ZOHO_WORKSPACE_ID}/views/${process.env.ZOHO_VIEW_ID}/publish/embed`,
     {
       headers: {
         'Authorization': `Zoho-oauthtoken ${accessToken}`,
         'ZANALYTICS-ORGID': process.env.ZOHO_ORG_ID
-      },
-      params: {
-        config: JSON.stringify(config)
       }
     }
   );
