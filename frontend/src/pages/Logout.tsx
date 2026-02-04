@@ -5,15 +5,13 @@ function Logout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.removeItem('user');
-    navigate('/login');
+    localStorage.clear();
+    setTimeout(() => {
+      navigate('/login', { replace: true });
+    }, 100);
   }, [navigate]);
 
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      Logging out...
-    </div>
-  );
+  return null;
 }
 
 export default Logout;
