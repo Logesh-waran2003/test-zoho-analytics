@@ -1,41 +1,30 @@
-import axios from "axios";
+import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
-let cachedToken = null;
-let tokenExpiry = null;
+export const getJwtToken = (userEmail) => {
+  const now = Math.floor(Date.now() / 1000);
+  
+  const payload = {
+    email: userEmail,
+    iat: now,
+    exp: now + 3600, // 1 hour expiry
+    nbf: now,
+    jti: uuidv4()
+  };
 
-export const getAccessToken = async () => {
-  if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
-    return cachedToken;
-  }
-
-  const params = new URLSearchParams({
-    refresh_token: process.env.ZOHO_REFRESH_TOKEN,
-    client_id: process.env.ZOHO_CLIENT_ID,
-    client_secret: process.env.ZOHO_CLIENT_SECRET,
-    grant_type: "refresh_token",
-  });
-
-  const response = await axios.post(
-    `${process.env.ZOHO_ACCOUNT_SERVER_URL}/oauth/v2/token`,
-    params,
-    { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
-  );
-
-  cachedToken = response.data.access_token;
-  tokenExpiry = Date.now() + (response.data.expires_in - 300) * 1000;
-
-  return cachedToken;
+  return jwt.sign(payload, process.env.ZOHO_JWT_SECRET, { algorithm: "HS256" });
 };
 
-export const getEmbedUrl = async (tenantId) => {
-  const accessToken = await getAccessToken();
-  return `https://analytics.zoho.in/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}?ZOHO_ACCESS_TOKEN=${accessToken}`;
+export const getEmbedUrl = async (userEmail) => {
+  const token = getJwtToken(userEmail);
+  const viewUrl = encodeURIComponent(`/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}`);
+  
+  return `https://analytics.stigmatatech.com/accounts/p/${process.env.ZOHO_PORTAL_ID}/signin/jwt/auth?jwt=${token}&return_to=${viewUrl}`;
 };
 
-export const getZohoRedirectUrl = async (tenantId) => {
-  const accessToken = await getAccessToken();
-
-  const redirectUrl = `${process.env.ZOHO_ANALYTICS_SERVER_URL}/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}?ZOHO_ACCESS_TOKEN=${accessToken}&tenant_id=${tenantId}`;
-
-  return redirectUrl;
+export const getZohoRedirectUrl = async (userEmail) => {
+  const token = getJwtToken(userEmail);
+  const viewUrl = encodeURIComponent(`/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}`);
+  
+  return `https://analytics.stigmatatech.com/accounts/p/${process.env.ZOHO_PORTAL_ID}/signin/jwt/auth?jwt=${token}&return_to=${viewUrl}`;
 };

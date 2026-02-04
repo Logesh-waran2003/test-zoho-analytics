@@ -12,13 +12,14 @@ router.get('/embed-url', async (req, res) => {
       return res.status(400).json({ error: 'tenant_id is required' });
     }
 
-    const result = await query('SELECT * FROM users WHERE tenant_id = $1', [tenant_id]);
+    const result = await query('SELECT user_id FROM users WHERE tenant_id = $1', [tenant_id]);
     
     if (result.rowCount === 0) {
       return res.status(403).json({ error: 'Tenant not authorized' });
     }
 
-    const embedUrl = await getEmbedUrl(tenant_id);
+    const userEmail = result.rows[0].user_id;
+    const embedUrl = await getEmbedUrl(userEmail);
     
     res.json({ embedUrl });
   } catch (error) {
@@ -35,13 +36,14 @@ router.get('/zoho-redirect-url', async (req, res) => {
       return res.status(400).json({ error: 'tenant_id is required' });
     }
 
-    const result = await query('SELECT * FROM users WHERE tenant_id = $1', [tenant_id]);
+    const result = await query('SELECT user_id FROM users WHERE tenant_id = $1', [tenant_id]);
     
     if (result.rowCount === 0) {
       return res.status(403).json({ error: 'Tenant not authorized' });
     }
 
-    const redirectUrl = await getZohoRedirectUrl(tenant_id);
+    const userEmail = result.rows[0].user_id;
+    const redirectUrl = await getZohoRedirectUrl(userEmail);
     
     res.json({ redirectUrl });
   } catch (error) {
