@@ -70,6 +70,9 @@ function Dashboard() {
           <button onClick={handleCustomizeReports} style={{ padding: '10px 20px', background: '#2196F3', color: 'white', border: 'none', cursor: 'pointer' }}>
             Customize Reports
           </button>
+          <button onClick={() => navigate('/logout')} style={{ padding: '10px 20px', background: '#f44336', color: 'white', border: 'none', cursor: 'pointer' }}>
+            Logout
+          </button>
         </div>
       </div>
       
