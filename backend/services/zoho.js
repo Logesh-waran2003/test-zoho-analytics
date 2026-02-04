@@ -9,7 +9,8 @@ export const getJwtToken = (userEmail) => {
     iat: now,
     exp: now + 3600, // 1 hour expiry
     nbf: now,
-    jti: uuidv4()
+    jti: uuidv4(),
+    csrf: uuidv4() // Add CSRF token
   };
 
   return jwt.sign(payload, process.env.ZOHO_JWT_SECRET, { algorithm: "HS256" });
@@ -24,7 +25,7 @@ export const getEmbedUrl = async (userEmail) => {
 
 export const getZohoRedirectUrl = async (userEmail) => {
   const token = getJwtToken(userEmail);
-  const viewUrl = encodeURIComponent(`/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}`);
+  const workspaceUrl = encodeURIComponent(`/workspace/${process.env.ZOHO_WORKSPACE_ID}`);
   
-  return `https://analytics.stigmatatech.com/accounts/p/${process.env.ZOHO_PORTAL_ID}/signin/jwt/auth?jwt=${token}&return_to=${viewUrl}`;
+  return `https://analytics.stigmatatech.com/accounts/p/${process.env.ZOHO_PORTAL_ID}/signin/jwt/auth?jwt=${token}&return_to=${workspaceUrl}`;
 };
