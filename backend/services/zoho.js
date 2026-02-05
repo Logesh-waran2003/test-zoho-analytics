@@ -18,7 +18,7 @@ export const getJwtToken = (userEmail) => {
 
 export const getEmbedUrl = async (userEmail) => {
   const token = getJwtToken(userEmail);
-  const viewUrl = encodeURIComponent(`/open-view/${process.env.ZOHO_WORKSPACE_ID}/${process.env.ZOHO_VIEW_ID}`);
+  const viewUrl = encodeURIComponent(`https://analytics.stigmatatech.com/open-view/460548000000023287`);
   
   return `https://analytics.stigmatatech.com/accounts/p/${process.env.ZOHO_PORTAL_ID}/signin/jwt/auth?jwt=${token}&return_to=${viewUrl}`;
 };
