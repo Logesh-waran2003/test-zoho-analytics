@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  client1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3005:4173"
+    restart: unless-stopped

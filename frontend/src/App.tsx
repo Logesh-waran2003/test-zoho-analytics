@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Form from './pages/Form';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
+import AnalyticsEmbed from './pages/AnalyticsEmbed';
 import Logout from './pages/Logout';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/form" element={<Form />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/analytics" element={<Analytics />} />
+        <Route path="/analytics/embed" element={<AnalyticsEmbed />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
