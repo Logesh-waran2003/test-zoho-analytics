@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getEmbedUrl, getZohoRedirectUrl } from '../api';
+import { getEmbedUrl } from '../api';
 
 function Dashboard() {
   const navigate = useNavigate();
