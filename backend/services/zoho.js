@@ -25,7 +25,7 @@ export const getEmbedUrl = async (userEmail) => {
 
 export const getZohoRedirectUrl = async (userEmail) => {
   const token = getJwtToken(userEmail);
-  const workspaceUrl = encodeURIComponent(`https://analytics.stigmatatech.com/workspace/${process.env.ZOHO_WORKSPACE_ID}`);
+  const workspaceUrl = encodeURIComponent(`https://analytics.stigmatatech.com`);
   
   return `https://analytics.stigmatatech.com/accounts/p/${process.env.ZOHO_PORTAL_ID}/signin/jwt/auth?jwt=${token}&return_to=${workspaceUrl}`;
 };
