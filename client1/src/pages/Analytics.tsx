@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 
 function Analytics() {
   const navigate = useNavigate();
-  const tenantId = 'tenant1'; // Client 1's tenant ID
 
   // URL to full app.stigmatatech.com with authentication
   const appUrl = `https://app.stigmatatech.com`;
